@@ -463,7 +463,7 @@ def run(log=print):
         "outround_draws": outround_draws,
         "state": st,
     }
-    json.dump(data, open(OUT, "w"), ensure_ascii=False)
+    json.dump(data, open(OUT, "w", encoding="utf-8"), ensure_ascii=False)
     log(f"done — {len(A)} judges, {sum(len(v) for v in draws.values())} debates, "
         f"{len(fb)} feedback")
     return data
