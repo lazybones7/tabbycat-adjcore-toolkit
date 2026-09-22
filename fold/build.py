@@ -473,7 +473,7 @@ def check_break_not_lost(breaks, tournament_slug=None):
     if not os.path.exists(RAW):
         return
     try:
-        with open(RAW) as fh:
+        with open(RAW, encoding="utf-8") as fh:
             prev = json.load(fh)
     except Exception:
         return
@@ -492,15 +492,15 @@ def check_break_not_lost(breaks, tournament_slug=None):
 
 # -------------------------------------------------------------------- build ----
 def render(payload):
-    shell = open(os.path.join(SRC, "index.html")).read()
-    css = open(os.path.join(SRC, "style.css")).read()
-    js = "\n\n".join(open(os.path.join(SRC, f)).read() for f in SCRIPTS)
+    shell = open(os.path.join(SRC, "index.html"), encoding="utf-8").read()
+    css = open(os.path.join(SRC, "style.css"), encoding="utf-8").read()
+    js = "\n\n".join(open(os.path.join(SRC, f), encoding="utf-8").read() for f in SCRIPTS)
     blob = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
     html = (shell.replace("/*__STYLE__*/", css)
                  .replace("/*__DATA__*/", "const DATA = " + blob + ";")
                  .replace("/*__APP__*/", js))
     os.makedirs(DIST, exist_ok=True)
-    with open(OUT, "w") as fh:
+    with open(OUT, "w", encoding="utf-8") as fh:
         fh.write(html)
     write_headers()
     return html
@@ -522,7 +522,7 @@ HEADERS = """/*
 
 
 def write_headers():
-    with open(os.path.join(DIST, "_headers"), "w") as fh:
+    with open(os.path.join(DIST, "_headers"), "w", encoding="utf-8") as fh:
         fh.write(HEADERS)
 
 
@@ -553,12 +553,12 @@ def main():
     if a.offline:
         if not os.path.exists(RAW):
             sys.exit("no saved pull yet — run without --offline once")
-        payload = json.load(open(RAW))
+        payload = json.load(open(RAW, encoding="utf-8"))
         gate.assert_clean(payload)
         payload["built_at"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     else:
         payload = pull()
-        with open(RAW, "w") as fh:
+        with open(RAW, "w", encoding="utf-8") as fh:
             json.dump(payload, fh, ensure_ascii=False, indent=1)
 
     report(payload, render(payload))
