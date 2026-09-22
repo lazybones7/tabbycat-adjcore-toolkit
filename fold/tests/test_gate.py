@@ -38,7 +38,7 @@ def check(ok, msg):
 
 
 def payload_from_page(path):
-    html = open(path).read()
+    html = open(path, encoding="utf-8").read()
     m = re.search(r"const DATA = (\{.*?\});\n", html, re.S)
     if not m:
         sys.exit("could not find the data blob in " + path)
